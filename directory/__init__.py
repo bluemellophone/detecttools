@@ -113,7 +113,7 @@ class Directory(object):
 if __name__ == "__main__":
 	# Test directory does not exist
 	try:
-		direct = Directory("tests/directory2")
+		direct = Directory("test/")
 	except Exception as e:
 		assert e[0] == "DIRECTORY_EXISTENCE"
 
