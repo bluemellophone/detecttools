@@ -11,7 +11,7 @@ def _kwargs(kwargs, key, value):
 
 class PascalVOC_XML_Annotation(object):
 
-	def __init__(an, folder, filename, **kwargs): 
+	def __init__(an, fullpath, folder, filename, **kwargs): 
 		_kwargs(kwargs, 'database_name', 'Image Database')
 		_kwargs(kwargs, 'database_year', str(date.today().year))
 		_kwargs(kwargs, 'source', 'Unknown') # images source (e.g., flickr, reservation, etc.)
@@ -26,8 +26,8 @@ class PascalVOC_XML_Annotation(object):
 		an.database_year = kwargs['database_year']
 		an.source = kwargs['source']
 
-		filepath = os.path.join(folder, filename)
-		if not os.path.exists(filepath):
+		#filepath = os.path.join(folder, filename)
+		if not os.path.exists(fullpath):
 			raise IOError('Image file not found')
 
 		if not kwargs['color']:
@@ -37,7 +37,7 @@ class PascalVOC_XML_Annotation(object):
 		else:
 			mode = -1 # Color with alpha channel
 
-		temp = cv2.imread(filepath, mode)
+		temp = cv2.imread(fullpath, mode)
 		an.height, an.width, an.channels = map(str, temp.shape)
 
 		an.segmented = kwargs['segmented']
@@ -73,7 +73,8 @@ class PascalVOC_XML_Annotation(object):
 
 class PascalVOC_XML_Object(object):
 
-	def __init__(ob, name, (xmin, ymin, xmax, ymax), **kwargs): 
+	# take bounding box coordinates in the same order as PASCAL-VOC
+	def __init__(ob, name, (xmax, ymax, xmin, ymin), **kwargs): 
 		_kwargs(kwargs, 'pose', 'Unspecified') # Left, Right, Frontal, Rear
 		_kwargs(kwargs, 'truncated', '0') # boolean flag, if there exists a partial object in the image
 		_kwargs(kwargs, 'difficult', '0') # boolean flag, if difficult case from previous years
