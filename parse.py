@@ -25,9 +25,9 @@ def parse_annotations(dir):
                 fname = filename_xml[0]
                 # get all bounding boxes in this annotation
                 for obj in data_xml.findall('object'):
-                    # get the animals present in this image
+                    # get the animals present in this image, don't want the file extension
                     for classname in obj.findall('name'):
-                        filenames[fname.text].append(classname.text)
+                        filenames[fname.text[0:-4]].append(classname.text)
         else:
             print 'could not find %s, ignoring' % target_file
 
@@ -40,7 +40,8 @@ if __name__ == '__main__':
     # the ratio of data to be set aside for training
     training_ratio = 0.8
     # class that will be marked as positive training examples
-    classname = 'zebra_grevys'
+    classname1 = 'zebra_grevys'
+    classname2 = 'zebra_plains'
     # directory that contains the xml annotations
     xml_dir = '/media/IBEIS/data/Annotations'
     annotations = parse_annotations(xml_dir)
@@ -49,15 +50,22 @@ if __name__ == '__main__':
     # shuffle the filenames to get a random training set
     random.shuffle(keys)
     # open the files to write the assignments to
-    with open(classname + '_train.txt', 'w') as training_file, open(classname + '_test.txt', 'w') as test_file:
+    with open(classname1 + '_train.txt', 'w') as training_file, \
+            open(classname1 + '_test.txt', 'w') as test_file, \
+            open('test.txt', 'w') as test, \
+            open('trainval.txt', 'w') as trainval:
         for i, filename in enumerate(keys):
             # write the first N files to the training set
             if i < N:
+                trainval.write(filename + '\n')
                 # write 1 if the image contains the positive class, else -1
-                if classname in annotations[filename]:
+                if classname1 in annotations[filename]:
+                    training_file.write(filename + '  1\n')
+                elif classname2 in annotations[filename]:
                     training_file.write(filename + '  1\n')
                 else:
                     training_file.write(filename + ' -1\n')
             # the rest of the files go to the test set, which all get 0s
             else:
+                test.write(filename + '\n')
                 test_file.write(filename + ' 0\n')
