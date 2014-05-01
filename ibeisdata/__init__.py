@@ -203,7 +203,6 @@ if __name__ == "__main__":
     }
 
     dataset = IBEIS_Data('test/', **information)
-    # dataset = IBEIS_Data('/Datasets/VOC2012/', **information)
     print dataset
     print 
 
@@ -225,29 +224,31 @@ if __name__ == "__main__":
         cont = dataset[com.randInt(0, len(dataset) - 1)].show()
 
     # Get all images using a specific positive set
-    # (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('chair', max_rois_neg=-1)
     (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('zebra_grevys')
+    
+    # Get a specific number of images (-1 for auto normalize to what the other gives)
     # (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('zebra_grevys', max_rois_neg=-1)
+    
     print "%s\t%s\t%s\t%s\t%s" %("       ", "Pos", "Neg", "Val", "Test")
     print "%s\t%s\t%s\t%s\t%s" %("Images:", len(pos), len(neg), len(val), len(test))
     print "%s\t%s\t%s\t%s\t%s" %("ROIs:  ", pos_rois, neg_rois, "", "")
 
-    # print "\nPositives:"
-    # for _pos in pos:
-    #     print _pos.image_path()
-    #     print _pos.bounding_boxes(parts=True)
+    print "\nPositives:"
+    for _pos in pos:
+        print _pos.image_path()
+        print _pos.bounding_boxes(parts=True)
 
-    # print "\nNegatives:"
-    # for _neg in neg:
-    #     print _neg.image_path()
-    #     print _neg.bounding_boxes(parts=True)
+    print "\nNegatives:"
+    for _neg in neg:
+        print _neg.image_path()
+        print _neg.bounding_boxes(parts=True)
 
-    # print "\nValidation:"
-    # for _val in val:
-    #     print _val.image_path()
-    #     print _val.bounding_boxes(parts=True)
+    print "\nValidation:"
+    for _val in val:
+        print _val.image_path()
+        print _val.bounding_boxes(parts=True)
 
-    # print "\nTest:"
-    # for _test in test:
-    #     print _test.image_path()
-    #     print _test.bounding_boxes(parts=True)
+    print "\nTest:"
+    for _test in test:
+        print _test.image_path()
+        print _test.bounding_boxes(parts=True)
