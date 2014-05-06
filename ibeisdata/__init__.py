@@ -30,7 +30,7 @@ class IBEIS_Data(object):
         ibsd.dataset_path = dataset_path
         ibsd.absolute_dataset_path = os.path.realpath(dataset_path)
 
-        direct = Directory(os.path.join(dataset_path, "Annotations") , include_file_extensions=["xml"])
+        direct = Directory(os.path.join(ibsd.dataset_path, "Annotations") , include_file_extensions=["xml"])
         ibsd.images = []
         files = direct.files()
         print "Loading Database"
@@ -191,7 +191,83 @@ class IBEIS_Data(object):
                     if val not in positive_category:
                         neg_rois += 1
 
+        print("%s\t%s\t%s\t%s\t%s" %("       ", "Pos", "Neg", "Val", "Test"))
+        print("%s\t%s\t%s\t%s\t%s" %("Images:", len(positives), len(negatives), len(validation), len(test)))
+        print("%s\t%s\t%s\t%s\t%s" %("ROIs:  ", pos_rois, neg_rois, "", ""))
+
         return (positives, pos_rois), (negatives, neg_rois), validation, test
+
+    def export_yaml(ibsd):
+        os.system("mkdir " + os.path.join(ibsd.dataset_path, "AnnotationsYAML"))
+
+        for image in ibsd.images:
+            _filename = image.filename.split(".")[0] + ".yml"
+
+            template_an = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_annotation.yml", 'r')
+            template_ob = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_object.yml", 'r')
+            template_pt = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_part.yml", 'r')
+            template_an = ''.join(template_an.readlines())
+            template_ob = ''.join(template_ob.readlines())
+            template_pt = ''.join(template_pt.readlines())
+
+            template_an = template_an.replace('_^_FOLDER_^_', image.folder)
+            template_an = template_an.replace('_^_FILENAME_^_', image.filename)
+            template_an = template_an.replace('_^_DARABASE_NAME_^_', image.source_database)
+            template_an = template_an.replace('_^_DATABASE_YEAR_^_', image.source_annotation)
+            template_an = template_an.replace('_^_SOURCE_^_', image.source_image)
+            template_an = template_an.replace('_^_WIDTH_^_', str(image.width))
+            template_an = template_an.replace('_^_HEIGHT_^_', str(image.height))
+            template_an = template_an.replace('_^_CHANNELS_^_', str(image.depth))
+            template_an = template_an.replace('_^_SEGMENTED_^_', str(int(image.segmented)))
+
+            objects = []
+            for _object in image.objects:
+                if _object.name == "MINED":
+                    continue
+
+                temp_ob = template_ob[:]
+
+                temp_ob = temp_ob.replace('_^_NAME_^_', _object.name)
+                temp_ob = temp_ob.replace('_^_POSE_^_', _object.pose)
+                temp_ob = temp_ob.replace('_^_TRUNCATED_^_', str(int(_object.truncated)))
+                temp_ob = temp_ob.replace('_^_DIFFICULT_^_', str(int(_object.difficult)))
+                temp_ob = temp_ob.replace('_^_XMIN_^_', str(_object.xmin))
+                temp_ob = temp_ob.replace('_^_YMIN_^_', str(_object.ymin))
+                temp_ob = temp_ob.replace('_^_XMAX_^_', str(_object.xmax))
+                temp_ob = temp_ob.replace('_^_YMAX_^_', str(_object.ymax))
+
+                parts = []
+                for  part in _object.parts:
+                    temp_pt = template_pt[:]
+
+                    temp_pt = temp_pt.replace('_^_NAME_^_', part.name)
+                    temp_pt = temp_pt.replace('_^_XMIN_^_', str(part.xmin))
+                    temp_pt = temp_pt.replace('_^_YMIN_^_', str(part.ymin))
+                    temp_pt = temp_pt.replace('_^_XMAX_^_', str(part.xmax))
+                    temp_pt = temp_pt.replace('_^_YMAX_^_', str(part.ymax))
+
+                    parts.append(temp_pt)
+
+                if len(parts) > 0:
+                    parts =  "\n\t\t\tpart:" + "".join(parts)
+                else:
+                    parts = ""
+
+                temp_ob = temp_ob.replace('_^_PART_MULTIPLE_OPTIONAL_^_', parts)
+
+                objects.append(temp_ob)
+
+            if len(objects) > 0:
+                objects =  "\n\tobject:" + "".join(objects)
+            else:
+                objects = ""
+
+            template_an = template_an.replace('_^_OBJECT_MULTIPLE_^_', objects)
+
+            output = open(os.path.join(ibsd.dataset_path, "AnnotationsYAML", _filename), 'w')
+            output.write(template_an)
+            output.close()
+
 
 
 if __name__ == "__main__":
@@ -202,9 +278,13 @@ if __name__ == "__main__":
         'mine_exclude_categories': ['zebra_grevys', 'zebra_plains'],
     }
 
-    dataset = IBEIS_Data('test/', **information)
+    # dataset = IBEIS_Data('test/', **information)
+
+    dataset = IBEIS_Data('/Users/bluemellophone/Desktop/BACKUP/IBEIS2014/', **information)
     print dataset
     print 
+
+    # dataset.export_yaml()
 
     # Access specific information about the dataset
     print "Categories:", dataset.categories
@@ -229,10 +309,6 @@ if __name__ == "__main__":
     # Get a specific number of images (-1 for auto normalize to what the other gives)
     # (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('zebra_grevys', max_rois_neg=-1)
     
-    print "%s\t%s\t%s\t%s\t%s" %("       ", "Pos", "Neg", "Val", "Test")
-    print "%s\t%s\t%s\t%s\t%s" %("Images:", len(pos), len(neg), len(val), len(test))
-    print "%s\t%s\t%s\t%s\t%s" %("ROIs:  ", pos_rois, neg_rois, "", "")
-
     print "\nPositives:"
     for _pos in pos:
         print _pos.image_path()
