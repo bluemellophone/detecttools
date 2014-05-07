@@ -94,7 +94,7 @@ class IBEIS_Data(object):
         
         _print_line("TOTAL", _max, len(ibsd.images), ibsd.rois)
 
-    def dataset(ibsd, positive_category, negative_exclude_categories=[], max_rois_pos=None, max_rois_neg=None):
+    def dataset(ibsd, positive_category, neg_exclude_categories=[], max_rois_pos=None, max_rois_neg=None):
         def _parse_dataset_file(category, _type):
             filepath = os.path.join(ibsd.dataset_path, "ImageSets", "Main", category + "_" + _type + ".txt")
             _dict = {}
@@ -134,12 +134,12 @@ class IBEIS_Data(object):
                     if val == positive_category:
                         flag = True
                         pos_rois += 1
-                    elif val not in negative_exclude_categories:
+                    elif val not in neg_exclude_categories:
                         neg_rois += 1
 
                 if flag:
                     positives.append(image)
-                elif val not in negative_exclude_categories:
+                elif val not in neg_exclude_categories:
                     negatives.append(image)
 
             if _val:
@@ -149,10 +149,10 @@ class IBEIS_Data(object):
                 test.append(image)
 
         # Setup auto normalize variables for equal positives and negatives
-        if max_rois_pos == -1:
+        if max_rois_pos == 'auto' or max_rois_pos == -1:
             max_rois_pos = neg_rois
 
-        if max_rois_neg == -1:
+        if max_rois_neg == 'auto' or max_rois_neg == -1:
             max_rois_neg = pos_rois
 
         # Remove positives to target, not gauranteed to give target, but 'close'.
