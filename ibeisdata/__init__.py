@@ -197,76 +197,76 @@ class IBEIS_Data(object):
 
         return (positives, pos_rois), (negatives, neg_rois), validation, test
 
-    def export_yaml(ibsd):
-        os.system("mkdir " + os.path.join(ibsd.dataset_path, "AnnotationsYAML"))
+    # def export_yaml(ibsd):
+    #     os.system("mkdir " + os.path.join(ibsd.dataset_path, "AnnotationsYAML"))
 
-        for image in ibsd.images:
-            _filename = image.filename.split(".")[0] + ".yml"
+    #     for image in ibsd.images:
+    #         _filename = image.filename.split(".")[0] + ".yml"
 
-            template_an = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_annotation.yml", 'r')
-            template_ob = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_object.yml", 'r')
-            template_pt = open("/Users/bluemellophone/code/python-modules/pypascalxml/template_part.yml", 'r')
-            template_an = ''.join(template_an.readlines())
-            template_ob = ''.join(template_ob.readlines())
-            template_pt = ''.join(template_pt.readlines())
+    #         template_an = open("../pypascalxml/template_annotation.yml", 'r')
+    #         template_ob = open("../pypascalxml/template_object.yml", 'r')
+    #         template_pt = open("../pypascalxml/template_part.yml", 'r')
+    #         template_an = ''.join(template_an.readlines())
+    #         template_ob = ''.join(template_ob.readlines())
+    #         template_pt = ''.join(template_pt.readlines())
 
-            template_an = template_an.replace('_^_FOLDER_^_', image.folder)
-            template_an = template_an.replace('_^_FILENAME_^_', image.filename)
-            template_an = template_an.replace('_^_DARABASE_NAME_^_', image.source_database)
-            template_an = template_an.replace('_^_DATABASE_YEAR_^_', image.source_annotation)
-            template_an = template_an.replace('_^_SOURCE_^_', image.source_image)
-            template_an = template_an.replace('_^_WIDTH_^_', str(image.width))
-            template_an = template_an.replace('_^_HEIGHT_^_', str(image.height))
-            template_an = template_an.replace('_^_CHANNELS_^_', str(image.depth))
-            template_an = template_an.replace('_^_SEGMENTED_^_', str(int(image.segmented)))
+    #         template_an = template_an.replace('_^_FOLDER_^_', image.folder)
+    #         template_an = template_an.replace('_^_FILENAME_^_', image.filename)
+    #         template_an = template_an.replace('_^_DARABASE_NAME_^_', image.source_database)
+    #         template_an = template_an.replace('_^_DATABASE_YEAR_^_', image.source_annotation)
+    #         template_an = template_an.replace('_^_SOURCE_^_', image.source_image)
+    #         template_an = template_an.replace('_^_WIDTH_^_', str(image.width))
+    #         template_an = template_an.replace('_^_HEIGHT_^_', str(image.height))
+    #         template_an = template_an.replace('_^_CHANNELS_^_', str(image.depth))
+    #         template_an = template_an.replace('_^_SEGMENTED_^_', str(int(image.segmented)))
 
-            objects = []
-            for _object in image.objects:
-                if _object.name == "MINED":
-                    continue
+    #         objects = []
+    #         for _object in image.objects:
+    #             if _object.name == "MINED":
+    #                 continue
 
-                temp_ob = template_ob[:]
+    #             temp_ob = template_ob[:]
 
-                temp_ob = temp_ob.replace('_^_NAME_^_', _object.name)
-                temp_ob = temp_ob.replace('_^_POSE_^_', _object.pose)
-                temp_ob = temp_ob.replace('_^_TRUNCATED_^_', str(int(_object.truncated)))
-                temp_ob = temp_ob.replace('_^_DIFFICULT_^_', str(int(_object.difficult)))
-                temp_ob = temp_ob.replace('_^_XMIN_^_', str(_object.xmin))
-                temp_ob = temp_ob.replace('_^_YMIN_^_', str(_object.ymin))
-                temp_ob = temp_ob.replace('_^_XMAX_^_', str(_object.xmax))
-                temp_ob = temp_ob.replace('_^_YMAX_^_', str(_object.ymax))
+    #             temp_ob = temp_ob.replace('_^_NAME_^_', _object.name)
+    #             temp_ob = temp_ob.replace('_^_POSE_^_', _object.pose)
+    #             temp_ob = temp_ob.replace('_^_TRUNCATED_^_', str(int(_object.truncated)))
+    #             temp_ob = temp_ob.replace('_^_DIFFICULT_^_', str(int(_object.difficult)))
+    #             temp_ob = temp_ob.replace('_^_XMIN_^_', str(_object.xmin))
+    #             temp_ob = temp_ob.replace('_^_YMIN_^_', str(_object.ymin))
+    #             temp_ob = temp_ob.replace('_^_XMAX_^_', str(_object.xmax))
+    #             temp_ob = temp_ob.replace('_^_YMAX_^_', str(_object.ymax))
 
-                parts = []
-                for  part in _object.parts:
-                    temp_pt = template_pt[:]
+    #             parts = []
+    #             for  part in _object.parts:
+    #                 temp_pt = template_pt[:]
 
-                    temp_pt = temp_pt.replace('_^_NAME_^_', part.name)
-                    temp_pt = temp_pt.replace('_^_XMIN_^_', str(part.xmin))
-                    temp_pt = temp_pt.replace('_^_YMIN_^_', str(part.ymin))
-                    temp_pt = temp_pt.replace('_^_XMAX_^_', str(part.xmax))
-                    temp_pt = temp_pt.replace('_^_YMAX_^_', str(part.ymax))
+    #                 temp_pt = temp_pt.replace('_^_NAME_^_', part.name)
+    #                 temp_pt = temp_pt.replace('_^_XMIN_^_', str(part.xmin))
+    #                 temp_pt = temp_pt.replace('_^_YMIN_^_', str(part.ymin))
+    #                 temp_pt = temp_pt.replace('_^_XMAX_^_', str(part.xmax))
+    #                 temp_pt = temp_pt.replace('_^_YMAX_^_', str(part.ymax))
 
-                    parts.append(temp_pt)
+    #                 parts.append(temp_pt)
 
-                if len(parts) > 0:
-                    parts =  "\n\t\t\tpart:" + "".join(parts)
-                else:
-                    parts = ""
+    #             if len(parts) > 0:
+    #                 parts =  "\n\t\t\tpart:" + "".join(parts)
+    #             else:
+    #                 parts = ""
 
-                temp_ob = temp_ob.replace('_^_PART_MULTIPLE_OPTIONAL_^_', parts)
+    #             temp_ob = temp_ob.replace('_^_PART_MULTIPLE_OPTIONAL_^_', parts)
 
-                objects.append(temp_ob)
+    #             objects.append(temp_ob)
 
-            if len(objects) > 0:
-                objects =  "\n\tobject:" + "".join(objects)
-            else:
-                objects = ""
+    #         if len(objects) > 0:
+    #             objects =  "\n\tobject:" + "".join(objects)
+    #         else:
+    #             objects = ""
 
-            template_an = template_an.replace('_^_OBJECT_MULTIPLE_^_', objects)
+    #         template_an = template_an.replace('_^_OBJECT_MULTIPLE_^_', objects)
 
-            output = open(os.path.join(ibsd.dataset_path, "AnnotationsYAML", _filename), 'w')
-            output.write(template_an)
-            output.close()
+    #         output = open(os.path.join(ibsd.dataset_path, "AnnotationsYAML", _filename), 'w')
+    #         output.write(template_an)
+    #         output.close()
 
 
 
@@ -282,7 +282,7 @@ if __name__ == "__main__":
     print dataset
     print 
 
-    dataset.export_yaml()
+    # dataset.export_yaml()
 
     # Access specific information about the dataset
     print "Categories:", dataset.categories
