@@ -278,13 +278,11 @@ if __name__ == "__main__":
         'mine_exclude_categories': ['zebra_grevys', 'zebra_plains'],
     }
 
-    # dataset = IBEIS_Data('test/', **information)
-
-    dataset = IBEIS_Data('/Users/bluemellophone/Desktop/BACKUP/IBEIS2014/', **information)
+    dataset = IBEIS_Data('test/', **information)
     print dataset
     print 
 
-    # dataset.export_yaml()
+    dataset.export_yaml()
 
     # Access specific information about the dataset
     print "Categories:", dataset.categories
