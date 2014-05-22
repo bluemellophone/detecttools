@@ -13,7 +13,7 @@ class IBEIS_Image(object):
     def __init__(ibsi, filename_xml, absolute_dataset_path, **kwargs):
         with open(filename_xml, 'r') as _xml:
             _xml = xml.XML(_xml.read().replace('\n', ''))
-            
+
             ibsi.folder = com.get(_xml, 'folder')
             ibsi.absolute_dataset_path = absolute_dataset_path
             ibsi.filename = com.get(_xml, 'filename')
@@ -31,7 +31,7 @@ class IBEIS_Image(object):
             ibsi.segmented = com.get(size, 'segmented') == "1"
 
             ibsi.objects = [ IBEIS_Object(obj, ibsi.width, ibsi.height) for obj in com.get(_xml, 'object', text=False, singularize=False) ]
-            
+
             for _object in ibsi.objects:
                 if _object.width <= kwargs['object_min_width'] or \
                    _object.height <= kwargs['object_min_height']:
@@ -42,7 +42,7 @@ class IBEIS_Image(object):
             for cat in ibsi.categories():
                 if cat in kwargs['mine_exclude_categories']:
                     flag = False
-                
+
             if kwargs['mine_negatives'] and flag:
 
                 def _overlaps(objects, obj, margin):
@@ -74,7 +74,7 @@ class IBEIS_Image(object):
                     height = com.randInt(kwargs['mine_height_min'], min(ibsi.height - 1, kwargs['mine_height_max']))
                     x = com.randInt(0, ibsi.width - width - 1)
                     y = com.randInt(0, ibsi.height - height - 1)
-                    
+
                     obj = {
                         'xmax': x + width,
                         'xmin': x,
@@ -123,7 +123,7 @@ class IBEIS_Image(object):
             cv2.putText(img, annotation, (xmin + 5, ymin), font, 0.4, (255, 255, 255))
 
         original = com.openImage(ibsi.image_path(), color=True)
-        
+
         for _object in ibsi.objects:
             color = com.randColor()
             _draw_box(original, _object.name.upper(), _object.xmin, _object.ymin, _object.xmax, _object.ymax, color)
@@ -139,6 +139,3 @@ class IBEIS_Image(object):
             return cont == ""
         else:
             return original
-    
-    
-

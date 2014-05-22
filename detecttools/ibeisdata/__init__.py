@@ -14,7 +14,7 @@ from ibeis_image import IBEIS_Image
 
 class IBEIS_Data(object):
 
-    def __init__(ibsd, dataset_path, **kwargs): 
+    def __init__(ibsd, dataset_path, **kwargs):
         com._kwargs(kwargs, 'object_min_width',    32)
         com._kwargs(kwargs, 'object_min_height',   32)
         com._kwargs(kwargs, 'mine_negatives',      True)
@@ -37,7 +37,7 @@ class IBEIS_Data(object):
         for i, filename in enumerate(files):
             if len(files) > 10:
                 if i % (len(files) / 10) == 0:
-                    print "%0.2f" %(float(i) / len(files))
+                    print "%0.2f" % (float(i) / len(files))
             ibsd.images.append(IBEIS_Image(filename, ibsd.absolute_dataset_path, **kwargs))
         print "    ...Loaded"
 
@@ -55,12 +55,12 @@ class IBEIS_Data(object):
         ibsd.distribution_images = com.histogram(ibsd.categories_images)
         ibsd.distribution_rois = com.histogram(ibsd.categories_rois)
         ibsd.rois = sum(ibsd.distribution_rois.values())
-        
+
         ibsd.categories = sorted(set(ibsd.categories_images))
-    
+
     def __str__(ibsd):
         return "<IBEIS Data Object | %s | %d images | %d categories | %d rois>" \
-            %(ibsd.absolute_dataset_path, len(ibsd.images), len(ibsd.categories), ibsd.rois)
+            % (ibsd.absolute_dataset_path, len(ibsd.images), len(ibsd.categories), ibsd.rois)
 
     def __repr__(ibsd):
         return "<IBEIS Data Object | %s>" % (ibsd.absolute_dataset_path)
@@ -81,8 +81,8 @@ class IBEIS_Data(object):
         def _print_line(category, spacing, images, rois):
             images = str(images)
             rois = str(rois)
-            print "%s%s\t%s" %(category + " " * (spacing - len(category)), images, rois)
-        
+            print "%s%s\t%s" % (category + " " * (spacing - len(category)), images, rois)
+
         _max = max([ len(category) for category in ibsd.distribution_rois.keys() + ['TOTAL', 'CATEGORY'] ]) + 3
 
         _print_line("CATEGORY", _max, "IMGs", "ROIs")
@@ -91,7 +91,7 @@ class IBEIS_Data(object):
 
         for category in sorted(ibsd.distribution_rois):
             _print_line(category, _max, ibsd.distribution_images[category], ibsd.distribution_rois[category])
-        
+
         _print_line("TOTAL", _max, len(ibsd.images), ibsd.rois)
 
     def dataset(ibsd, positive_category, neg_exclude_categories=[], max_rois_pos=None, max_rois_neg=None):
@@ -117,7 +117,7 @@ class IBEIS_Data(object):
         train_values = _parse_dataset_file(positive_category, "train")
         val_values = _parse_dataset_file(positive_category, "val")
         test_values = _parse_dataset_file(positive_category, "test")
-        
+
         pos_rois = 0
         neg_rois = 0
         for image in ibsd.images:
@@ -160,7 +160,7 @@ class IBEIS_Data(object):
             pos_density = float(pos_rois) / len(positives)
             target_num = int(max_rois_pos / pos_density)
             print "Normalizing Positives, Target:", target_num
-            
+
             # Remove images to match target
             while len(positives) > target_num:
                 positives.pop( com.randInt(0, len(positives) - 1) )
@@ -178,7 +178,7 @@ class IBEIS_Data(object):
             neg_density = float(neg_rois) / len(negatives)
             target_num = int(max_rois_neg / neg_density)
             print "Normalizing Negatives, Target:", target_num
-            
+
             # Remove images to match target
             while len(negatives) > target_num:
                 negatives.pop( com.randInt(0, len(negatives) - 1) )
@@ -280,7 +280,7 @@ if __name__ == "__main__":
 
     dataset = IBEIS_Data('test/', **information)
     print dataset
-    print 
+    print
 
     # dataset.export_yaml()
 
@@ -288,13 +288,13 @@ if __name__ == "__main__":
     print "Categories:", dataset.categories
     print "Number of images:", len(dataset)
 
-    print 
+    print
     dataset.print_distribution()
-    print 
+    print
 
     # Access specific image from dataset using filename or index
     print dataset['2014_000002']
-    print dataset['_000002'] #partial also works (takes first match)
+    print dataset['_000002']  # partial also works (takes first match)
     cont = True
     while cont:
         # Show the detection regions by drawing them on the source image
@@ -303,10 +303,10 @@ if __name__ == "__main__":
 
     # Get all images using a specific positive set
     (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('zebra_grevys')
-    
+
     # Get a specific number of images (-1 for auto normalize to what the other gives)
     # (pos, pos_rois), (neg, neg_rois), val, test = dataset.dataset('zebra_grevys', max_rois_neg=-1)
-    
+
     print "\nPositives:"
     for _pos in pos:
         print _pos.image_path()
