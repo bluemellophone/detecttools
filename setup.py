@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
 from utool.util_setup import setuptools_setup
+from setuptools import setup
 
 
 if __name__ == '__main__':
-    setuptools_setup(
+    kwargs = setuptools_setup(
         setup_fpath=__file__,
         name='detecttools',
         description=('Utilities for writing detectors (like pyrf)'),
@@ -14,3 +15,4 @@ if __name__ == '__main__':
         packages=['detecttools'],
         py_modules=['detecttools'],
     )
+    setup(**kwargs)
