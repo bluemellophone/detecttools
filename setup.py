@@ -12,7 +12,12 @@ if __name__ == '__main__':
         url='https://github.com/bluemellophone/pyrf',
         author='Jason Parham',
         author_email='bluemellophone@gmail.com',
-        packages=['detecttools'],
+        packages=['detecttools',
+                  'detecttools.ctypes_interface',
+                  'detecttools.directory',
+                  'detecttools.ibeisdata',
+                  'detecttools.pypascalxml',
+                  ],
         py_modules=['detecttools'],
     )
     setup(**kwargs)
