@@ -1,17 +1,21 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
-from utool.util_setup import setuptools_setup
 from setuptools import setup
+from utool import util_setup
 
 
 if __name__ == '__main__':
-    kwargs = setuptools_setup(
+    kwargs = util_setup.setuptools_setup(
         setup_fpath=__file__,
         name='detecttools',
+        version=util_setup.parse_package_for_version('detecttools'),
+        licence=util_setup.read_license('LICENSE'),
+        long_description=util_setup.parse_readme('README.md'),
         description=('Utilities for writing detectors (like pyrf)'),
         url='https://github.com/bluemellophone/pyrf',
         author='Jason Parham',
         author_email='bluemellophone@gmail.com',
+        #packages=util_setup.find_packages(),
         packages=['detecttools',
                   'detecttools.ctypes_interface',
                   'detecttools.directory',
