@@ -20,7 +20,7 @@ if __name__ == '__main__':
                   'detecttools.ctypes_interface',
                   'detecttools.directory',
                   'detecttools.ibeisdata',
-                  'detecttools.pypascalxml',
+                  'detecttools.pypascalmarkup',
                   ],
         py_modules=['detecttools'],
     )
