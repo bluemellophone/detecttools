@@ -18,6 +18,7 @@ setupkw = dict(
               'detecttools.ctypes_interface',
               'detecttools.directory',
               'detecttools.ibeisdata',
+              'detecttools.pascaldata',
               'detecttools.pypascalmarkup',
               ],
     py_modules=['detecttools'],
